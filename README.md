@@ -1,7 +1,7 @@
 # Graphix OpenQASM Parser
 
 `graphix-qasm-parser` is a plugin for the
-Graphix library that parses
+[Graphix](https://github.com/TeamGraphix/graphix) library that parses
 OpenQASM circuit specifications into
 `graphix.transpiler.Circuit` objects, which can then be transpiled
 into MBQC patterns.
@@ -12,7 +12,7 @@ It is distributed as a separate plugin because it depends on
 ## Installation
 
 ```bash
-pip install https://github.com/thierry-martinez/graphix-qasm-parser.git
+pip install https://github.com/TeamGraphix/graphix-qasm-parser.git
 ```
 
 ## Usage

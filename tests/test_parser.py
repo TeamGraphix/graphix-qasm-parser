@@ -21,6 +21,7 @@ rz(5*pi/4) q;
     assert len(circuit.instruction) == 1
     instruction = circuit.instruction[0]
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 5 * math.pi / 4)
 
 
@@ -37,6 +38,7 @@ rz(5*pi/4) q;
     assert len(circuit.instruction) == 1
     instruction = circuit.instruction[0]
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 5 * math.pi / 4)
 
 
@@ -70,6 +72,7 @@ rz(pi/4) q[0];
     assert isinstance(instruction, RZZ)
     assert instruction.target == 1
     assert instruction.control == 0
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi / 3)
     instruction = next(iterator)
     assert isinstance(instruction, CNOT)
@@ -96,14 +99,17 @@ rz(pi/4) q[0];
     instruction = next(iterator)
     assert isinstance(instruction, RX)
     assert instruction.target == 0
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi / 4)
     instruction = next(iterator)
     assert isinstance(instruction, RY)
     assert instruction.target == 0
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi / 4)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
     assert instruction.target == 0
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi / 4)
     with pytest.raises(StopIteration):
         next(iterator)
@@ -131,33 +137,43 @@ rz(π) q;
     iterator = iter(circuit.instruction)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1.5)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, -1)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1 + 2)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1 - 2)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1 * 2)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1 / 2)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, 1 - (2 + 3))
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi)
     with pytest.raises(StopIteration):
         next(iterator)
@@ -178,6 +194,7 @@ rz(alpha) q[0];
     iterator = iter(circuit.instruction)
     instruction = next(iterator)
     assert isinstance(instruction, RZ)
+    assert isinstance(instruction.angle, float)
     assert math.isclose(instruction.angle, math.pi / 4)
     with pytest.raises(StopIteration):
         next(iterator)

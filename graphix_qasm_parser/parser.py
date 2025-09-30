@@ -289,6 +289,7 @@ class _CircuitVisitor(qasm3ParserVisitor):
             ]
         else:
             exprs = []
+        instruction: Instruction
         if gate == "ccx":
             # https://openqasm.com/language/standard_library.html#ccx
             instruction = CCX(target=operands[2], controls=(operands[0], operands[1]))

@@ -40,6 +40,7 @@ docstring-code-format = true
 [tool.mypy]
 # Keep in sync with pyright
 files = ["*.py", "graphix_qasm_parser"]
+# For antlr4
 ignore_missing_imports = true
 follow_untyped_imports = true
 strict = true
@@ -48,7 +49,7 @@ strict = true
 # Keep in sync with pyright
 files = ["*.py", "graphix_qasm_parser"]
 typeCheckingMode = "strict"
-# Disable the following errors while graphix stub is not available
+# For antlr4
 reportMissingImports = "none"
 reportMissingTypeStubs = "none"
 reportUnknownVariableType = "none"
