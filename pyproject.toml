@@ -8,10 +8,13 @@ maintainers = [
 ]
 license-files = ["LICENSE"]
 version = "1"
-dynamic = ["dependencies"]
+dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements-dev.txt"] }
 
 [tool.ruff]
 line-length = 120
@@ -40,6 +43,7 @@ docstring-code-format = true
 [tool.mypy]
 # Keep in sync with pyright
 files = ["*.py", "graphix_qasm_parser"]
+# For antlr4
 ignore_missing_imports = true
 follow_untyped_imports = true
 strict = true
@@ -48,7 +52,7 @@ strict = true
 # Keep in sync with pyright
 files = ["*.py", "graphix_qasm_parser"]
 typeCheckingMode = "strict"
-# Disable the following errors while graphix stub is not available
+# For antlr4
 reportMissingImports = "none"
 reportMissingTypeStubs = "none"
 reportUnknownVariableType = "none"
