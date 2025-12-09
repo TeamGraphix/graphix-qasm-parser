@@ -1,2 +1,2 @@
-graphix @ git+https://github.com/TeamGraphix/graphix.git@add_cz_instruction
+graphix>=0.3.1
 openqasm-parser>=3.1.0
