@@ -45,10 +45,12 @@ else:
             raise NotImplementedError(msg)
 
     try:
-        from graphix.fundamentals import rad_to_angle
+        from graphix.fundamentals import ANGLE_PI, rad_to_angle
     except ImportError:
         # Compatibility with graphix <= 0.3.3
         # See https://github.com/TeamGraphix/graphix/pull/399
+        ANGLE_PI = math.pi
+
         def rad_to_angle(angle: float) -> float:
             """In older versions of graphix (<= 0.3.3), instruction angles were expressed in radians."""
             return angle
@@ -472,7 +474,8 @@ class _ExpressionVisitor(qasm3ParserVisitor):
         raise NotImplementedError(msg)
 
     def parse_binary_operator(
-        self, ctx: qasm3Parser.AdditiveExpressionContext | qasm3Parser.MultiplicativeExpressionContext
+        self,
+        ctx: qasm3Parser.AdditiveExpressionContext | qasm3Parser.MultiplicativeExpressionContext,
     ) -> _Value:
         lhs_expr: qasm3Parser.ExpressionContext = ctx.getChild(0)
         rhs_expr: qasm3Parser.ExpressionContext = ctx.getChild(2)
