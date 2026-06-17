@@ -324,9 +324,6 @@ class _CircuitVisitor(qasm3ParserVisitor):
         if gate == "ccx":
             # https://openqasm.com/language/standard_library.html#ccx
             instruction = CCX(target=operands[2], controls=(operands[0], operands[1]))
-        elif gate == "crz":
-            # https://openqasm.com/language/standard_library.html#crz
-            instruction = RZZ(target=operands[1], control=operands[0], angle=rad_to_angle(exprs[0]))
         elif gate == "cx":
             # https://openqasm.com/language/standard_library.html#cx
             instruction = CNOT(target=operands[1], control=operands[0])
