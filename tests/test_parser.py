@@ -4,7 +4,7 @@ import math
 from typing import TYPE_CHECKING
 
 import pytest
-from graphix.instruction import CCX, CNOT, RX, RY, RZ, RZZ, SWAP, H, S, X, Y, Z
+from graphix.instruction import CCX, CNOT, RX, RY, RZ, SWAP, H, S, X, Y, Z
 
 from graphix_qasm_parser import OpenQASMParser
 
