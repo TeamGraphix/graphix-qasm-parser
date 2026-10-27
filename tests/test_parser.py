@@ -454,14 +454,14 @@ if (b[0] ^ b[1]) {
     assert circuit.width == 3
     assert circuit.instruction == [
         Instruction.M(2, Axis.Z),
-        Instruction.CONDINSTR((Instruction.X(0),), {2}),
+        Instruction.CONDINSTR({2}, (Instruction.X(0),)),
         Instruction.M(0, Axis.Z),
         Instruction.CONDINSTR(
+            {0, 2},
             (
                 Instruction.X(1),
                 Instruction.Z(1),
             ),
-            {0, 2},
         ),
     ]
 
@@ -485,7 +485,7 @@ if (b[0] ^ b[1] ^ b[0]) {
     assert circuit.instruction == [
         Instruction.M(2, Axis.Z),
         Instruction.M(0, Axis.Z),
-        Instruction.CONDINSTR((Instruction.X(1),), {0}),
+        Instruction.CONDINSTR({0}, (Instruction.X(1),)),
     ]
 
 
