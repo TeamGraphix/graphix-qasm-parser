@@ -18,7 +18,7 @@ qubit q;
 rz(5*pi/4) q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     assert len(circuit.instruction) == 1
     instruction = circuit.instruction[0]
@@ -35,7 +35,7 @@ qreg q;
 rz(5*pi/4) q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     assert len(circuit.instruction) == 1
     instruction = circuit.instruction[0]
@@ -79,7 +79,7 @@ cu(pi/4, pi/5, pi/6, pi/7) q[0], q[1];
 gphase(pi/3);
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 3
     iterator = iter(circuit.instruction)
     instruction = next(iterator)
@@ -218,7 +218,7 @@ qubit q;
 u2(pi/3, pi/4) q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     assert circuit.instruction == [
         Instruction.U(target=0, theta=ANGLE_PI / 2, phi=ANGLE_PI / 3, lambda_=ANGLE_PI / 4),
@@ -235,7 +235,7 @@ qubit q;
 u3(pi/2, pi/3, pi/4) q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     assert circuit.instruction == [
         Instruction.U(target=0, theta=ANGLE_PI / 2, phi=ANGLE_PI / 3, lambda_=ANGLE_PI / 4),
@@ -252,7 +252,7 @@ qubit[2] q;
 CX q[0], q[1];
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 2
     assert circuit.instruction == [Instruction.CNOT(control=0, target=1)]
 
@@ -274,7 +274,7 @@ rz(pi) q;
 rz(π) q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     iterator = iter(circuit.instruction)
     instruction = next(iterator)
@@ -331,7 +331,7 @@ qubit[SIZE] q;
 rz(alpha) q[0];
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     iterator = iter(circuit.instruction)
     instruction = next(iterator)
@@ -358,7 +358,7 @@ gate cphase2(θ) a, b
 cphase2(π / 2) q[0], q[1];
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 2
     assert circuit.instruction == [
         Instruction.RZ(0, ANGLE_PI / 4),
@@ -379,7 +379,7 @@ h a; }
 fancyid q;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 1
     assert circuit.instruction == [Instruction.H(0), Instruction.H(0)]
 
@@ -421,7 +421,7 @@ creg br2[2];
 br2 = measure qr2;
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 6
     assert circuit.instruction == [
         Instruction.M(0, Axis.Z),
@@ -431,6 +431,21 @@ br2 = measure qr2;
         Instruction.M(4, Axis.Z),
         Instruction.M(5, Axis.Z),
     ]
+
+
+def test_physical_qubit() -> None:
+    """Test physical qubits."""
+    s = """
+OPENQASM 3.0;
+include "stdgates.inc";
+cx $2, $1;
+h $1;
+"""
+    parser = OpenQASMParser()
+    parsed = parser.parse_str(s)
+    assert parsed.circuit.width == 2
+    assert parsed.physical_qubits == {1: 1, 2: 0}
+    assert parsed.circuit.instruction == [Instruction.CNOT(control=0, target=1), Instruction.H(1)]
 
 
 def test_if_statements() -> None:
@@ -450,19 +465,13 @@ if (b[0] ^ b[1]) {
  }
 """
     parser = OpenQASMParser()
-    circuit = parser.parse_str(s)
+    circuit = parser.parse_str(s).circuit
     assert circuit.width == 3
     assert circuit.instruction == [
         Instruction.M(2, Axis.Z),
-        Instruction.CONDINSTR((Instruction.X(0),), {2}),
+        Instruction.CONDINSTR({2}, (Instruction.X(0),)),
         Instruction.M(0, Axis.Z),
-        Instruction.CONDINSTR(
-            (
-                Instruction.X(1),
-                Instruction.Z(1),
-            ),
-            {0, 2},
-        ),
+        Instruction.CONDINSTR({0, 2}, (Instruction.X(1), Instruction.Z(1))),
     ]
 
 
@@ -480,12 +489,12 @@ if (b[0] ^ b[1] ^ b[0]) {
 """
     parser = OpenQASMParser()
     with pytest.warns(UserWarning, match=r"Redundant bits are removed from domains."):
-        circuit = parser.parse_str(s)
+        circuit = parser.parse_str(s).circuit
     assert circuit.width == 3
     assert circuit.instruction == [
         Instruction.M(2, Axis.Z),
         Instruction.M(0, Axis.Z),
-        Instruction.CONDINSTR((Instruction.X(1),), {0}),
+        Instruction.CONDINSTR({0}, (Instruction.X(1),)),
     ]
 
 
@@ -506,7 +515,7 @@ if (b[1] ^ b[1]) {
         pytest.warns(UserWarning, match=r"Conditional instruction with empty condition dropped."),
         pytest.warns(UserWarning, match=r"Redundant bits are removed from domains."),
     ):
-        circuit = parser.parse_str(s)
+        circuit = parser.parse_str(s).circuit
     assert circuit.width == 3
     assert circuit.instruction == [
         Instruction.M(2, Axis.Z),
